@@ -14,7 +14,6 @@ import java.util.List;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {Main.class}) // replacement for deprecated SpringApplicationConfiguration
 @ActiveProfiles({"test"})
