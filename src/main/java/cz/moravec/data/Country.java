@@ -1,7 +1,15 @@
 package cz.moravec.data;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "country")
 public class Country {
+    @Id
+    @GeneratedValue
     private int id;
+
+    @Column(name = "text")
     private String name;
 
     public Country(){}

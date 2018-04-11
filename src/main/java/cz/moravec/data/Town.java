@@ -1,8 +1,21 @@
 package cz.moravec.data;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "town")
 public class Town {
+
+    @Id
+    @GeneratedValue
     private int id;
+
+    @Column(name = "name")
     private String name;
+    @ManyToOne
+//    Tato anotace zajišťuje, že před vymazáním všech uživatelů není nutné vymazávat také všechny objednávky
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "username")
     private Country country;
 
     public Town(int id, String name, Country country) {

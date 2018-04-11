@@ -24,4 +24,10 @@
         </root>
     </springProfile>
 
+    <springProfile name="devel">
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
 </configuration>

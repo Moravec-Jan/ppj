@@ -1,0 +1,23 @@
+15:48:17.671 [main] INFO  cz.moravec.Main - Starting Main on DESKTOP-TROLIK with PID 10612 (started by hmora in D:\Moje Dokumenty\skola\ppj\semester)
+15:48:17.673 [main] INFO  cz.moravec.Main - The following profiles are active: devel
+15:48:17.717 [main] INFO  o.s.c.a.AnnotationConfigApplicationContext - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@2f6e28bc: startup date [Wed Apr 11 15:48:17 CEST 2018]; root of context hierarchy
+15:48:18.702 [main] INFO  hsqldb.db.HSQLDB62B0552D50.ENGINE - checkpointClose start
+15:48:18.702 [main] INFO  hsqldb.db.HSQLDB62B0552D50.ENGINE - checkpointClose synched
+15:48:18.765 [main] INFO  hsqldb.db.HSQLDB62B0552D50.ENGINE - checkpointClose script done
+15:48:18.888 [main] INFO  hsqldb.db.HSQLDB62B0552D50.ENGINE - checkpointClose end
+15:48:18.940 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Building JPA container EntityManagerFactory for persistence unit 'default'
+15:48:18.950 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+15:48:19.002 [main] INFO  org.hibernate.Version - HHH000412: Hibernate Core {5.0.12.Final}
+15:48:19.003 [main] INFO  org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+15:48:19.004 [main] INFO  org.hibernate.cfg.Environment - HHH000021: Bytecode provider name : javassist
+15:48:19.044 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+15:48:19.169 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
+15:48:19.384 [main] INFO  org.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: cz.moravec.data.Town (class must be instantiated by Interceptor)
+15:48:19.497 [main] INFO  o.h.tool.hbm2ddl.SchemaExport - HHH000227: Running hbm2ddl schema export
+15:48:19.994 [main] INFO  o.h.tool.hbm2ddl.SchemaExport - HHH000230: Schema export complete
+15:48:20.018 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+15:48:37.272 [main] WARN  o.s.c.a.AnnotationConfigApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sessionFactory' defined in cz.moravec.Main: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.hibernate.SessionFactory]: Factory method 'sessionFactory' threw exception; nested exception is java.lang.IllegalStateException: No transactional EntityManager available
+15:48:37.272 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+15:48:37.273 [main] INFO  o.h.tool.hbm2ddl.SchemaExport - HHH000227: Running hbm2ddl schema export
