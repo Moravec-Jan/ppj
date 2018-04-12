@@ -1,26 +1,20 @@
 package cz.moravec.data;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.*;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.List;
+
+import static cz.moravec.data.Country.ID_ATTRIBUTE;
+import static cz.moravec.data.Country.TABLE_NAME;
 
 @Transactional
 public class CountryDao {
 
-    public static final String TABLE_NAME = "country";
-    public static final String ID_ATTRIBUTE = "id";
-    public static final String NAME_ATTRIBUTE = "name";
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -29,53 +23,45 @@ public class CountryDao {
         return sessionFactory.getCurrentSession();
     }
 
+    @SuppressWarnings("unchecked")
     public List<Country> getCountries() {
-        Criteria crit = session().createCriteria(Country.class);
-        return crit.list();
+        Criteria criteria = session().createCriteria(Country.class);
+        return criteria.list();
     }
 
-//    public boolean update(Country country) {
-//        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(
-//                country);
-//
-//        return jdbc.update("UPDATE " + TABLE_NAME + " SET " + NAME_ATTRIBUTE + "=:name WHERE " + ID_ATTRIBUTE + "=:id", params) == 1;
-//    }
-//
-//    public boolean create(Country country) {
-//
-//        BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(
-//                country);
-//
-//        return jdbc
-//                .update("INSERT INTO " + TABLE_NAME + " (" + NAME_ATTRIBUTE + ") VALUES (:name)",
-//                        params) == 1;
-//    }
-//
-//    @Transactional
-//    public int[] create(List<Country> countries) {
-//
-//        SqlParameterSource[] params = SqlParameterSourceUtils
-//                .createBatch(countries.toArray());
-//
-//        return jdbc
-//                .batchUpdate("INSERT INTO " + TABLE_NAME + " (" + NAME_ATTRIBUTE + ") VALUES (:name)", params);
-//    }
-//
-//    public boolean delete(int id) {
-//        MapSqlParameterSource params = new MapSqlParameterSource("id", id);
-//
-//        return jdbc.update("DELETE FROM " + TABLE_NAME + " WHERE " + ID_ATTRIBUTE + "=:id", params) == 1;
-//    }
-//
-//
-//    public Country getCountry(int id) {
-//        MapSqlParameterSource params = new MapSqlParameterSource("id", id);
-//        return jdbc.queryForObject("SELECT " + ID_ATTRIBUTE + "," + NAME_ATTRIBUTE + " FROM " + TABLE_NAME+ " WHERE "+ ID_ATTRIBUTE + "=:id",params,BeanPropertyRowMapper.newInstance(Country.class));
-//    }
-//
-//
-//    public void deleteCountries() {
-//        jdbc.getJdbcOperations().execute("DELETE FROM " + TABLE_NAME);
-//    }
+    public void update(Country country) {
+        session().saveOrUpdate(country);
+    }
+
+    public int create(Country country) {
+        return (Integer) session().save(country);
+    }
+
+
+    public void create(List<Country> countries) {
+        for (Country country : countries) {
+            session().save(country);
+        }
+    }
+
+    public boolean delete(int id) {
+
+        Query query = session().createQuery("DELETE FROM " + TABLE_NAME + " WHERE " + ID_ATTRIBUTE + "=:id");
+        query.setLong(ID_ATTRIBUTE, id);
+        return query.executeUpdate() == 1;
+    }
+
+
+    public Country getCountry(int id) {
+        Criteria criteria = session().createCriteria(Country.class)
+                .add(Restrictions.idEq(id));
+
+        return (Country) criteria.uniqueResult();
+    }
+
+
+    public int deleteCountries() {
+        return session().createQuery("DELETE FROM " + TABLE_NAME).executeUpdate();
+    }
 
 }

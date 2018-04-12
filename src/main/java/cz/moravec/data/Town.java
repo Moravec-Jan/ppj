@@ -5,23 +5,28 @@ import javax.persistence.*;
 @Entity
 @Table(name = "town")
 public class Town {
+    public static final String TABLE_NAME = "Town";
+    public static final String ID_ATTRIBUTE = "id";
+    public static final String NAME_ATTRIBUTE = "name";
+    public static final String COUNTRY_ATTRIBUTE = "country";
 
     @Id
-    @GeneratedValue
     private int id;
 
     @Column(name = "name")
     private String name;
     @ManyToOne
-//    Tato anotace zajišťuje, že před vymazáním všech uživatelů není nutné vymazávat také všechny objednávky
 //    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "country_id")
     private Country country;
 
     public Town(int id, String name, Country country) {
         this.id = id;
         this.name = name;
         this.country = country;
+    }
+
+    public Town() {
     }
 
     public int getId() {

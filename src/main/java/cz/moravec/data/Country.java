@@ -1,21 +1,31 @@
 package cz.moravec.data;
 
+
 import javax.persistence.*;
 
+import static cz.moravec.data.Country.TABLE_NAME;
+
 @Entity
-@Table(name = "country")
+@Table(name = TABLE_NAME)
 public class Country {
+
+    public static final String TABLE_NAME = "Country";
+    public static final String ID_ATTRIBUTE = "id";
+    public static final String NAME_ATTRIBUTE = "name";
+
+
     @Id
     @GeneratedValue
     private int id;
 
-    @Column(name = "text")
+    @Column(name = NAME_ATTRIBUTE)
     private String name;
 
-    public Country(){}
 
-    public Country(int id, String name) {
-        this.id = id;
+    public Country() {
+    }
+
+    public Country(String name) {
         this.name = name;
     }
 
