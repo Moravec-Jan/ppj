@@ -1,4 +1,4 @@
-package cz.moravec.data;
+package cz.moravec.model;
 
 import javax.persistence.*;
 

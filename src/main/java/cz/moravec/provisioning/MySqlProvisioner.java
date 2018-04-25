@@ -1,11 +1,10 @@
 package cz.moravec.provisioning;
 
-import cz.moravec.Main;
-import cz.moravec.data.Country;
+import cz.moravec.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -14,9 +13,9 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import javax.sql.DataSource;
 import java.util.List;
 
-public class Provisioner {
+public class MySqlProvisioner implements InitializingBean {
 
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final Logger log = LoggerFactory.getLogger(App.class);
 
     @Autowired
     private NamedParameterJdbcOperations namedParameterJdbcOperations;
@@ -26,26 +25,31 @@ public class Provisioner {
 
     private final static String SELECT_TABLE_NAMES_QUERY = "SELECT TABLE_NAME FROM  INFORMATION_SCHEMA.TABLES";
 
-    public void doProvision() {
+    public void doProvisionIfNeeded() {
 
         List<String> allTables;
 
         allTables = namedParameterJdbcOperations.getJdbcOperations().queryForList(SELECT_TABLE_NAMES_QUERY, String.class);
         if (!allTables.contains("COUNTRY")) {
-            log.warn("DB Provisioner: No tables exist and will be created");
+            log.warn("DB MySqlProvisioner: No tables exist and will be created");
             createDb();
             allTables = namedParameterJdbcOperations.getJdbcOperations().queryForList(SELECT_TABLE_NAMES_QUERY, String.class);
             System.out.println(allTables);
         } else
-            log.info("DB Provisioner: Table COUNTRY exists, all existing tables: " + allTables);
+            log.info("DB MySqlProvisioner: Table COUNTRY exists, all existing tables: " + allTables);
     }
 
-    public void createDb() {
+    private void createDb() {
         Resource rc = new ClassPathResource("create_tables.hsql");
         try {
             ScriptUtils.executeSqlScript(dataSource.getConnection(), rc);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        doProvisionIfNeeded();
     }
 }

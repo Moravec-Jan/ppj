@@ -1,9 +1,9 @@
-package cz.moravec.data;
+package cz.moravec.model;
 
 
 import javax.persistence.*;
 
-import static cz.moravec.data.Country.TABLE_NAME;
+import static cz.moravec.model.Country.TABLE_NAME;
 
 @Entity
 @Table(name = TABLE_NAME)

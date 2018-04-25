@@ -1,4 +1,3 @@
-
 CREATE TABLE country
 (
     id INT NOT NULL AUTO_INCREMENT,
