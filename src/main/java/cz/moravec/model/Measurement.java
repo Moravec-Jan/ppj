@@ -2,6 +2,7 @@ package cz.moravec.model;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ public class Measurement {
     public static final String COLLECTION_NAME = "measurements";
 
     @Id
+    @Indexed(name = "expire_after_15_days", expireAfterSeconds = 60*60*24*14)
     @GeneratedValue
     private ObjectId id;
 

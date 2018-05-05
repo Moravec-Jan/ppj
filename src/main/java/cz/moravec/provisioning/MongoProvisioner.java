@@ -2,6 +2,7 @@ package cz.moravec.provisioning;
 
 import cz.moravec.model.Measurement;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
