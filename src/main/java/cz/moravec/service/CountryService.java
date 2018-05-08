@@ -4,6 +4,7 @@ import cz.moravec.model.Country;
 import cz.moravec.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class CountryService {
         return repository.findById(id);
     }
 
-    public Iterable<Country> getAll() {
-        return repository.findAll();
+    public List<Country> getAll(Pageable pageable) {
+        return repository.findAll(pageable).getContent();
     }
 
     public Country save(Country country) {

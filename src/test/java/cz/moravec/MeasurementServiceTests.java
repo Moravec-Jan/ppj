@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -77,7 +78,7 @@ public class MeasurementServiceTests {
         measurementService.save(measurement);
         long count = measurementService.getCount();
         assertTrue("There should be measurements in database!", count >= 1);
-        Iterable<Measurement> all = measurementService.getAll();
+        Iterable<Measurement> all = measurementService.getAll(PageRequest.of(0,10));
         Optional<Measurement> measurementFromDb = measurementService.get(all.iterator().next().getId());
         assertTrue("Retrieved Measurement is null", measurementFromDb.isPresent());
         assertEquals("Retrieved Measurement should match created Measurement.", measurement.getTemperature(), measurementFromDb.get().getTemperature(), 0.0);
@@ -89,7 +90,7 @@ public class MeasurementServiceTests {
     public void updateCountyTest() {
         Measurement measurement = createMeasurement();
         measurementService.save(measurement);
-        Iterable<Measurement> measurements = measurementService.getAll();
+        Iterable<Measurement> measurements = measurementService.getAll(PageRequest.of(0,10));
         Measurement measurementFromDb = measurements.iterator().next();
         float value = 12.5781615f;
         measurementFromDb.setPressure(value);
@@ -104,7 +105,7 @@ public class MeasurementServiceTests {
     public void getMeasurementByIdTest() {
         Measurement measurement = createMeasurement();
         measurementService.save(measurement);
-        Iterable<Measurement> measurements = measurementService.getAll();
+        Iterable<Measurement> measurements = measurementService.getAll(PageRequest.of(0,10));
         Measurement measurementFromDb = measurements.iterator().next();
         Optional<Measurement> retrievedMeasurementById = measurementService.get(measurementFromDb.getId());
         assertTrue("Retrieved Measurement is null", retrievedMeasurementById.isPresent());

@@ -7,6 +7,7 @@ import cz.moravec.repository.MeasurementRepository;
 import cz.moravec.repository.MeasurementRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class MeasurementService {
         return repository.findById(id);
     }
 
-    public Iterable<Measurement> getAll() {
-        return repository.findAll();
+    public List<Measurement> getAll(Pageable pageable) {
+        return repository.findAll(pageable).getContent();
     }
 
     public Measurement save(Measurement Measurement) {

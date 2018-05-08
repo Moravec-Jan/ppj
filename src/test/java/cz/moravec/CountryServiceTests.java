@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -74,7 +75,7 @@ public class CountryServiceTests {
         countryService.save(country);
         long count = countryService.getCount();
         assertTrue("There should be countries in database!", count >= 1);
-        Iterable<Country> all = countryService.getAll();
+        Iterable<Country> all = countryService.getAll(PageRequest.of(0,10));
         Optional<Country> countryFromDb = countryService.get(all.iterator().next().getId());
         assertTrue("Retrieved country is null", countryFromDb.isPresent());
         assertEquals("Retrieved country should match created country.", country.getName(), countryFromDb.get().getName());
@@ -86,7 +87,7 @@ public class CountryServiceTests {
     public void updateCountyTest() {
         Country country = createCountry();
         countryService.save(country);
-        Iterable<Country> countries = countryService.getAll();
+        Iterable<Country> countries = countryService.getAll(PageRequest.of(0,10));
         Country countryFromDb = countries.iterator().next();
         String name = "Updated country name.";
         countryFromDb.setName(name);
@@ -101,7 +102,7 @@ public class CountryServiceTests {
     public void getCountryByIdTest() {
         Country country = createCountry();
         countryService.save(country);
-        Iterable<Country> countries = countryService.getAll();
+        Iterable<Country> countries = countryService.getAll(PageRequest.of(0,10));
         Country countryFromDb = countries.iterator().next();
         Optional<Country> retrievedCountryById = countryService.get(countryFromDb.getId());
         assertTrue("Retrieved country is null", retrievedCountryById.isPresent());

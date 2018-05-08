@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -94,7 +95,7 @@ public class TownServiceTests {
     public void updateCountyTest() {
         Town Town = createTown();
         townService.save(Town);
-        Iterable<Town> countries = townService.getAll();
+        Iterable<Town> countries = townService.getAll(PageRequest.of(0,10));
         Town TownFromDb = countries.iterator().next();
         String name = "Updated Town name.";
         TownFromDb.setName(name);
@@ -109,7 +110,7 @@ public class TownServiceTests {
     public void getTownByIdTest() {
         Town Town = createTown();
         townService.save(Town);
-        Iterable<Town> countries = townService.getAll();
+        Iterable<Town> countries = townService.getAll(PageRequest.of(0,10));
         Town TownFromDb = countries.iterator().next();
         Optional<Town> retrievedTownById = townService.get(TownFromDb.getId());
         assertTrue("Retrieved Town is null", retrievedTownById.isPresent());

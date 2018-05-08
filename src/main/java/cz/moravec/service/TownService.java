@@ -4,6 +4,7 @@ import cz.moravec.model.Town;
 import cz.moravec.repository.TownRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +26,8 @@ public class TownService {
         return repository.findById(id);
     }
 
-    public Iterable<Town> getAll() {
-        return repository.findAll();
+    public List<Town> getAll(Pageable pageable) {
+        return repository.findAll(pageable).getContent();
     }
 
     public Town save(Town Town) {

@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "weather.expire-after-seconds",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "weather.update-after-seconds",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "weather.read-only-mode",
+      "type": "java.lang.String"
+    }
+  ]
+}
