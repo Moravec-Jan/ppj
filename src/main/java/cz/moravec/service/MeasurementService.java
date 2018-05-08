@@ -24,7 +24,7 @@ public class MeasurementService {
     }
 
 
-    public Optional<Measurement> get(ObjectId id) {
+    public Optional<Measurement> get(String id) {
         return repository.findById(id);
     }
 
@@ -40,9 +40,10 @@ public class MeasurementService {
         repository.saveAll(countries);
     }
 
-    public boolean exists(ObjectId id) {
+    public boolean exists(String id) {
         return repository.existsById(id);
     }
+
 
     public long getCount() {
         return repository.count();

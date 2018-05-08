@@ -21,7 +21,7 @@ public class CountryService {
         this.repository = repository;
     }
 
-    public Optional<Country> get(int id) {
+    public Optional<Country> get(long id) {
         return repository.findById(id);
     }
 
@@ -37,7 +37,7 @@ public class CountryService {
         repository.saveAll(countries);
     }
 
-    public boolean exists(int id) {
+    public boolean exists(long id) {
         return repository.existsById(id);
     }
 

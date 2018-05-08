@@ -9,16 +9,12 @@ import static cz.moravec.model.Country.TABLE_NAME;
 @Table(name = TABLE_NAME)
 public class Country {
 
-    public static final String TABLE_NAME = "Country";
-    public static final String ID_ATTRIBUTE = "id";
-    public static final String NAME_ATTRIBUTE = "name";
+    static final String TABLE_NAME = "country";
 
 
     @Id
     @GeneratedValue
-    private int id;
-
-    @Column(name = NAME_ATTRIBUTE)
+    private long id;
     private String name;
 
 
@@ -29,11 +25,11 @@ public class Country {
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

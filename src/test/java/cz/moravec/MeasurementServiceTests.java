@@ -1,128 +1,123 @@
 package cz.moravec;
 
+
 import cz.moravec.model.Measurement;
-import cz.moravec.model.Measurement;
-import cz.moravec.repository.MeasurementRepository;
 import cz.moravec.service.MeasurementService;
+import cz.moravec.web.RestApi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles({"test"})
 public class MeasurementServiceTests {
+    private static int counter = 1;
 
     @Autowired
     private MeasurementService measurementService;
 
 
+    private final String TEST_URL = "http://localhost:8080";
+    private Retrofit retrofit = new Retrofit.Builder().baseUrl(TEST_URL).addConverterFactory(JacksonConverterFactory.create()).build();
+    private RestApi restService = retrofit.create(RestApi.class);
+
     @Test
-    public void createMeasurementTest() {
+    public void createMeasurementTest() throws IOException {
         Measurement Measurement = createMeasurement();
-        measurementService.save(Measurement);
-        assertTrue("Measurement creation has failed", measurementService.exists(Measurement.getId()));
+        long count1 = measurementService.getCount();
+        Response<Measurement> response = restService.createMeasurement(Measurement).execute();
+        long count2 = measurementService.getCount();
+        List<Measurement> all = measurementService.getAll(PageRequest.of(0, 10));
+        Measurement last = all.get(all.size() - 1);
+        assertEquals("Measurement has not been created", count1 + 1, count2);
+        assertNotNull("Response is null", response.body());
+        assertEquals("Created measurement does not equal requested", last.toString(), response.body().toString());
     }
 
     @Test
-    public void deleteMeasurementTest() {
+    public void deleteMeasurementTest() throws IOException {
 
         Measurement newMeasurement = createMeasurement();
-        Measurement measurement = measurementService.save(newMeasurement);
-        long count1 = measurementService.getCount();
+        measurementService.save(newMeasurement);
+        List<Measurement> all = measurementService.getAll(PageRequest.of(0, 10));
+        Measurement someMeasurement = all.get(0);
+        restService.deleteMeasurement(someMeasurement.getId()).execute();
+        Optional<Measurement> measurement = measurementService.get(someMeasurement.getId());
 
-        boolean result = measurementService.delete(measurement);
-        long count2 = measurementService.getCount();
-        assertTrue("Delete method should return true", result);
-        assertEquals("One measurement should be deleted", count1, count2 + 1);
+        assertTrue("Measurement should be deleted", !measurement.isPresent());
     }
 
     @Test
-    public void deleteMeasurementsTest() {
+    public void updateMeasurementTest() throws IOException {
 
-        List<Measurement> measurements = createMeasurements();
-        measurementService.save(measurements.get(0));
-        measurementService.save(measurements.get(1));
-        boolean result = measurementService.deleteAll();
-        assertTrue("All measurements should be deleted", result);
+        Measurement newMeasurement = createMeasurement();
+        measurementService.save(newMeasurement);
+        List<Measurement> all = measurementService.getAll(PageRequest.of(0, 10));
+        Measurement someMeasurement = all.get(0);
+        someMeasurement.setTemperature(-99.0D);
+        Response<Measurement> response = restService.updateMeasurement(someMeasurement).execute();
+
+        assertNotNull("Response is null!", response);
+        Measurement result = response.body();
+        assertNotNull("Resulted measurement is null", result);
+        assertEquals("Measurement temperature should be updated", someMeasurement.getTemperature(), result.getTemperature(), 0D);
     }
 
     @Test
-    public void createMeasurementsTest() {
+    public void getMeasurement() throws IOException {
 
-        measurementService.deleteAll();
-        List<Measurement> measurements = createMeasurements();
-        measurementService.save(measurements);
-
-        assertEquals("3 measurements should be created", 3, measurementService.getCount());
+        Measurement Measurement = createMeasurement();
+        measurementService.save(Measurement);
+        Iterable<Measurement> all = measurementService.getAll(PageRequest.of(0, 10));
+        Measurement someMeasurement = all.iterator().next();
+        Response<Measurement> execute = restService.getMeasurement(someMeasurement.getId()).execute();
+        Measurement MeasurementFromRest = execute.body();
+        assertNotNull("Retrieved measurement is null", MeasurementFromRest);
+        assertEquals("Retrieved Measurement should match created measurement.", someMeasurement.toString(), MeasurementFromRest.toString());
     }
 
     @Test
-    public void getMeasurementsTest() {
+    public void getCountries() throws IOException {
 
-        Measurement measurement = createMeasurement();
-        measurementService.save(measurement);
-        long count = measurementService.getCount();
-        assertTrue("There should be measurements in database!", count >= 1);
-        Iterable<Measurement> all = measurementService.getAll(PageRequest.of(0,10));
-        Optional<Measurement> measurementFromDb = measurementService.get(all.iterator().next().getId());
-        assertTrue("Retrieved Measurement is null", measurementFromDb.isPresent());
-        assertEquals("Retrieved Measurement should match created Measurement.", measurement.getTemperature(), measurementFromDb.get().getTemperature(), 0.0);
-
+        List<Measurement> countries = createMeasurements();
+        measurementService.save(countries);
+        Response<List<Measurement>> execute = restService.getMeasurements().execute();
+        List<Measurement> result = execute.body();
+        assertNotNull("Result is null!", result);
+        List<Measurement> all = measurementService.getAll(PageRequest.of(0, 100));
+        assertEquals("Result should have same number of items!", result.size(), all.size());
     }
 
-
-    @Test
-    public void updateCountyTest() {
-        Measurement measurement = createMeasurement();
-        measurementService.save(measurement);
-        Iterable<Measurement> measurements = measurementService.getAll(PageRequest.of(0,10));
-        Measurement measurementFromDb = measurements.iterator().next();
-        float value = 12.5781615f;
-        measurementFromDb.setPressure(value);
-        measurementService.save(measurementFromDb);
-
-        Optional<Measurement> measurementDb = measurementService.get(measurementFromDb.getId());
-        assertTrue("Retrieved measurement is null", measurementDb.isPresent());
-        assertEquals("Update did not work, measurements are not same", measurementDb.get().getPressure(), value,0.0);
-    }
-
-    @Test
-    public void getMeasurementByIdTest() {
-        Measurement measurement = createMeasurement();
-        measurementService.save(measurement);
-        Iterable<Measurement> measurements = measurementService.getAll(PageRequest.of(0,10));
-        Measurement measurementFromDb = measurements.iterator().next();
-        Optional<Measurement> retrievedMeasurementById = measurementService.get(measurementFromDb.getId());
-        assertTrue("Retrieved Measurement is null", retrievedMeasurementById.isPresent());
-        assertEquals("Measurement by ID should match Measurement from list.", measurementFromDb.getTemperature(), retrievedMeasurementById.get().getTemperature(),0.0);
-
-    }
 
     //support methods
     private Measurement createMeasurement() {
-        return new Measurement(10f, 20f, 30f);
+        return new Measurement(counter++, 10f, 20f, 30f);
     }
 
     private List<Measurement> createMeasurements() {
         List<Measurement> list = new ArrayList<>();
-        Measurement measurement1 = new Measurement(10f, 20f, 30f);
-        Measurement measurement2 = new Measurement(0f, 15f, 17f);
-        Measurement measurement3 = new Measurement(-10f, 2f, 3f);
+        Measurement measurement1 = new Measurement(counter++, 10f, 20f, 30f);
+        Measurement measurement2 = new Measurement(counter++, 0f, 15f, 17f);
+        Measurement measurement3 = new Measurement(counter++, -10f, 2f, 3f);
         list.add(measurement1);
         list.add(measurement2);
         list.add(measurement3);

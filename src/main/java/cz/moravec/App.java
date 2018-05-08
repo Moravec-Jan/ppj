@@ -19,31 +19,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-
+@EnableAsync
+@EnableScheduling
 @SpringBootApplication
 public class App {
-
-    @Profile({"test", "devel"})
-    @Bean
-    public MySqlProvisioner sqlProvisioner() {
-        return new MySqlProvisioner();
-    }
-
-    @Profile("devel")
-    @Bean
-    public MongoProvisioner mongoProvisioner(MongoTemplate mongo) {
-        return new MongoProvisioner(mongo);
-    }
-
 
     public static void main(String[] args) {
 
 //        SpringApplication.run(App.class, args);
-
-
-        SpringApplication app = new SpringApplication(App.class);
-        ApplicationContext ctx = app.run(App.class,args);
+        ApplicationContext ctx = SpringApplication.run(App.class,args);
 
         WeatherService weatherService = ctx.getBean(WeatherService.class);
         try {

@@ -44,7 +44,7 @@ public class MySqlProvisioner implements InitializingBean {
         try {
             ScriptUtils.executeSqlScript(dataSource.getConnection(), rc);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("DB MySqlProvisioner",e);
         }
     }
 

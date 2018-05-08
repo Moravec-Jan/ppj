@@ -9,14 +9,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 
 @Configuration
-public class MongoPreConfig implements InitializingBean {
+public class MongoConfig implements InitializingBean {
     private static final String EXPIRATION_INDEX = "EXPIRATION_INDEX";
 
     private final WeatherProperties properties;
 
     private final MongoTemplate mongo;
 
-    public MongoPreConfig(MongoTemplate mongo, WeatherProperties properties) {
+    public MongoConfig(MongoTemplate mongo, WeatherProperties properties) {
         this.mongo = mongo;
         this.properties = properties;
     }

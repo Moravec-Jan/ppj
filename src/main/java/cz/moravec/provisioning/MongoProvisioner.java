@@ -23,7 +23,7 @@ public class MongoProvisioner implements InitializingBean {
     }
 
     private void doProvision() {
-        Measurement measurement = new Measurement(10f, 15f, 30f);
+        Measurement measurement = new Measurement(1,10f, 15f, 30f);
         mongo.save(measurement, Measurement.COLLECTION_NAME);
     }
 

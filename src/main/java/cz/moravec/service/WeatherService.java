@@ -29,19 +29,19 @@ public class WeatherService {
     }
 
 
-    public Measurement downloadActualDataForTown(int id) throws Exception {
+    public Measurement downloadActualDataForTown(long id ) throws Exception {
         String result = downloadRawDataForTown(id);
-        return parseMeasurement(result);
+        return parseMeasurement(id, result);
     }
 
-    private Measurement parseMeasurement(String result) {
+    private Measurement parseMeasurement(long townId, String result) {
         double temperature = JsonPath.read(result, "$.main.temp");
-        double humidity = JsonPath.read(result, "$.main.humidity");
-        double pressure = JsonPath.read(result, "$.main.pressure");
-        return new Measurement(temperature, pressure, humidity);
+        double humidity = ((Integer) JsonPath.read(result, "$.main.humidity")).doubleValue();
+        double pressure = ((Integer) JsonPath.read(result, "$.main.pressure")).doubleValue();
+        return new Measurement(townId, temperature, pressure, humidity);
     }
 
-    private String downloadRawDataForTown(int id) throws IOException {
+    private String downloadRawDataForTown(long id) throws IOException {
         URL url = new URL(generateUrlForTownId(id));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(CONNECT_TIMEOUT);
@@ -58,7 +58,7 @@ public class WeatherService {
         return content.toString();
     }
 
-    private String generateUrlForTownId(int id) {
+    private String generateUrlForTownId(long id) {
         return WEATHER_URL.replace(TOWN_ID_PLACEHOLDER, String.valueOf(id)).replace(API_KEY_PLACEHOLDER, properties.getApiKey());
     }
 }

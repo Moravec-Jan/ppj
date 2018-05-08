@@ -1,113 +1,106 @@
 package cz.moravec;
 
 import cz.moravec.model.Country;
-import cz.moravec.repository.CountryRepository;
 import cz.moravec.service.CountryService;
+import cz.moravec.web.RestApi;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles({"test"})
 public class CountryServiceTests {
+
+
+    private final String TEST_URL = "http://localhost:8080";
+    private Retrofit retrofit = new Retrofit.Builder().baseUrl(TEST_URL).addConverterFactory(JacksonConverterFactory.create()).build();
+    private RestApi restService = retrofit.create(RestApi.class);
 
     @Autowired
     private CountryService countryService;
 
     @Test
-    public void createCountryTest() {
+    public void createCountryTest() throws IOException {
         Country country = createCountry();
-        countryService.save(country);
-        assertTrue("Country creation has failed", countryService.exists(country.getId()));
+        long count1 = countryService.getCount();
+        Response<Country> response = restService.createCountry(country).execute();
+        long count2 = countryService.getCount();
+        List<Country> all = countryService.getAll(PageRequest.of(0, 10));
+        Country last = all.get(all.size() - 1);
+        assertEquals("Country has not been created", count1 + 1, count2);
+        assertNotNull("Response is null", response.body());
+        assertEquals("Created country does not equal requested", last.toString(), response.body().toString());
     }
 
     @Test
-    public void deleteCountryTest() {
+    public void deleteCountryTest() throws IOException {
 
         Country newCountry = createCountry();
-        Country country = countryService.save(newCountry);
-        long count1 = countryService.getCount();
+        countryService.save(newCountry);
+        restService.deleteCountry(newCountry.getId()).execute();
+        Optional<Country> country = countryService.get(newCountry.getId());
 
-        boolean result = countryService.delete(country);
-        long count2 = countryService.getCount();
-        assertTrue("Delete method should return true", result);
-        assertEquals("One country should be deleted", count1, count2 + 1);
+        assertTrue("Country should be deleted", !country.isPresent());
     }
 
     @Test
-    public void deleteCountriesTest() {
+    public void updateCountryTest() throws IOException {
 
-        List<Country> countries = createCountries();
-        countryService.save(countries.get(0));
-        countryService.save(countries.get(1));
-        boolean result = countryService.deleteAll();
-        assertTrue("All countries should be deleted", result);
+        Country newCountry = createCountry();
+        countryService.save(newCountry);
+        List<Country> all = countryService.getAll(PageRequest.of(0, 10));
+        Country someCountry = all.get(0);
+        someCountry.setName("Britannia");
+        Response<Country> response = restService.updateCountry(someCountry).execute();
+
+        assertNotNull("Response is null!", response);
+        Country result = response.body();
+        assertNotNull("Resulted country is null", result);
+        assertEquals("Country name should be updated", someCountry.getName(), result.getName());
     }
 
     @Test
-    public void createCountriesTest() {
+    public void getCountry() throws IOException {
 
-        countryService.deleteAll();
+        Country country = createCountry();
+        countryService.save(country);
+        Iterable<Country> all = countryService.getAll(PageRequest.of(0, 10));
+        Country someCountry = all.iterator().next();
+        Response<Country> execute = restService.getCountry(someCountry.getId()).execute();
+        Country countryFromRest = execute.body();
+        assertNotNull("Retrieved country is null", countryFromRest);
+        assertEquals("Retrieved country id should match created country id.", someCountry.getId(), countryFromRest.getId());
+        assertEquals("Retrieved country name should match created country name.", someCountry.getName(), countryFromRest.getName());
+    }
+
+    @Test
+    public void getCountries() throws IOException {
+
         List<Country> countries = createCountries();
         countryService.save(countries);
-
-        assertEquals("2 countries should be created", 2, countryService.getCount());
-    }
-
-    @Test
-    public void getCountriesTest() {
-
-        Country country = createCountry();
-        countryService.save(country);
-        long count = countryService.getCount();
-        assertTrue("There should be countries in database!", count >= 1);
-        Iterable<Country> all = countryService.getAll(PageRequest.of(0,10));
-        Optional<Country> countryFromDb = countryService.get(all.iterator().next().getId());
-        assertTrue("Retrieved country is null", countryFromDb.isPresent());
-        assertEquals("Retrieved country should match created country.", country.getName(), countryFromDb.get().getName());
-
-    }
-
-
-    @Test
-    public void updateCountyTest() {
-        Country country = createCountry();
-        countryService.save(country);
-        Iterable<Country> countries = countryService.getAll(PageRequest.of(0,10));
-        Country countryFromDb = countries.iterator().next();
-        String name = "Updated country name.";
-        countryFromDb.setName(name);
-        countryService.save(countryFromDb);
-
-        Optional<Country> countryDb = countryService.get(countryFromDb.getId());
-        assertTrue("Retrieved country is null", countryDb.isPresent());
-        assertEquals("Update did not work, countries are not same", countryDb.get().getName(), name);
-    }
-
-    @Test
-    public void getCountryByIdTest() {
-        Country country = createCountry();
-        countryService.save(country);
-        Iterable<Country> countries = countryService.getAll(PageRequest.of(0,10));
-        Country countryFromDb = countries.iterator().next();
-        Optional<Country> retrievedCountryById = countryService.get(countryFromDb.getId());
-        assertTrue("Retrieved country is null", retrievedCountryById.isPresent());
-        assertEquals("Country by ID should match country from list.", countryFromDb.getName(), retrievedCountryById.get().getName());
-
+        Response<List<Country>> execute = restService.getCountries().execute();
+        List<Country> result = execute.body();
+        assertNotNull("Result is null!", result);
+        List<Country> all = countryService.getAll(PageRequest.of(0, 100));
+        assertEquals("Result should have same number of items!", result.size(), all.size());
     }
 
     //support methods for tests

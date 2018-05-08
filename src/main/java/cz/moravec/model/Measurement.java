@@ -24,18 +24,19 @@ public class Measurement {
 
     @Id
     @GeneratedValue
-    @JsonIgnore
-    private ObjectId id;
+    private String id;
 
     // for expiration
     private Date creationTime = new Date();
 
-    @JsonProperty()
+    private long townId;
+
     private double temperature;
     private double pressure;
     private double humidity;
 
-    public Measurement(double temperature, double pressure, double humidity) {
+    public Measurement(long townId, double temperature, double pressure, double humidity) {
+        this.townId = townId;
         this.temperature = temperature;
         this.pressure = pressure;
         this.humidity = humidity;
@@ -44,8 +45,12 @@ public class Measurement {
     public Measurement() {
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
+    }
+
+    public Date getCreationTime() {
+        return creationTime;
     }
 
     public double getTemperature() {
@@ -74,5 +79,18 @@ public class Measurement {
 
     public void setHumidity(double humidity) {
         this.humidity = humidity;
+    }
+
+    public long getTownId() {
+        return townId;
+    }
+
+    public void setTownId(long townId) {
+        this.townId = townId;
+    }
+
+    @Override
+    public String toString() {
+        return "Measurement [" + "id=" + id + ", town_id=" + townId + " , temperature=" + temperature + ", humidity=" + humidity + ", pressure=" + pressure + "]";
     }
 }

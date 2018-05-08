@@ -1,10 +1,8 @@
-package cz.moravec.controller;
+package cz.moravec.web.controller;
 
-import cz.moravec.core.RestApi;
+import cz.moravec.web.RestApi;
 import cz.moravec.model.Measurement;
 import cz.moravec.service.MeasurementService;
-import cz.moravec.service.MeasurementService;
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,39 +21,45 @@ public class MeasurementRestController {
     }
 
     @RequestMapping(value = RestApi.MEASUREMENTS_PATH, method = RequestMethod.GET)
-    public ResponseEntity<List<Measurement>> showMeasurements() {
+    public ResponseEntity<List<Measurement>> getMeasurements() {
         List<Measurement> measurements = measurementService.getAll(PageRequest.of(0, 100));
         return new ResponseEntity<>(measurements, HttpStatus.OK);
     }
 
     @RequestMapping(value = RestApi.MEASUREMENTS_PATH, method = RequestMethod.POST)
-    public ResponseEntity<Measurement> addMeasurement(@RequestBody Measurement town) {
-        if (measurementService.exists(town.getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            measurementService.save(town);
-            return new ResponseEntity<>(town, HttpStatus.OK);
-
-        }
+    public ResponseEntity<Measurement> addMeasurement(@RequestBody Measurement measurement) {
+            measurementService.save(measurement);
+            return new ResponseEntity<>(measurement, HttpStatus.OK);
     }
+
+    @RequestMapping(value = RestApi.MEASUREMENT_PATH, method = RequestMethod.POST)
+    public ResponseEntity<Measurement> updateMeasurement(@RequestBody Measurement measurement) {
+        Optional<Measurement> requestedMeasurement = measurementService.get(measurement.getId());
+        if (requestedMeasurement.isPresent()) {
+            Measurement updatedMeasurement = measurementService.save(measurement);
+            return new ResponseEntity<>(updatedMeasurement, HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
     @RequestMapping(value = RestApi.MEASUREMENT_PATH, method = RequestMethod.GET)
     public ResponseEntity<Measurement> getMeasurement(@PathVariable("id") String id) {
-        Optional<Measurement> town = measurementService.get(new ObjectId(id));
-        if (!town.isPresent()) {
+        Optional<Measurement> measurement = measurementService.get(id);
+        if (!measurement.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else
-            return new ResponseEntity<>(town.get(), HttpStatus.OK);
+            return new ResponseEntity<>(measurement.get(), HttpStatus.OK);
 
     }
 
     @RequestMapping(value = RestApi.MEASUREMENT_PATH, method = RequestMethod.DELETE)
     public ResponseEntity deleteMeasurement(@PathVariable("id") String id) {
-        Optional<Measurement> town = measurementService.get(new ObjectId(id));
-        if (!town.isPresent())
+        Optional<Measurement> measurement = measurementService.get(id);
+        if (!measurement.isPresent())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else
-            measurementService.delete(town.get());
+            measurementService.delete(measurement.get());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

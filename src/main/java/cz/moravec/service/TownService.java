@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-//@Profile("!mongo_test")
 @Service
 public class TownService {
 
@@ -22,7 +21,7 @@ public class TownService {
         this.repository = repository;
     }
 
-    public Optional<Town> get(int id) {
+    public Optional<Town> get(long id) {
         return repository.findById(id);
     }
 
@@ -38,7 +37,7 @@ public class TownService {
         repository.saveAll(countries);
     }
 
-    public boolean exists(int id) {
+    public boolean exists(long id) {
         return repository.existsById(id);
     }
 

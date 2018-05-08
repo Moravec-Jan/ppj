@@ -3,15 +3,12 @@ package cz.moravec.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "town")
+@Table(name = Town.TABLE_NAME)
 public class Town {
-    public static final String TABLE_NAME = "Town";
-    public static final String ID_ATTRIBUTE = "id";
-    public static final String NAME_ATTRIBUTE = "name";
-    public static final String COUNTRY_ATTRIBUTE = "country";
+    static final String TABLE_NAME = "town";
 
     @Id
-    private int id;
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -20,7 +17,7 @@ public class Town {
     @JoinColumn(name = "country_id")
     private Country country;
 
-    public Town(int id, String name, Country country) {
+    public Town(long id, String name, Country country) {
         this.id = id;
         this.name = name;
         this.country = country;
@@ -29,11 +26,11 @@ public class Town {
     public Town() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

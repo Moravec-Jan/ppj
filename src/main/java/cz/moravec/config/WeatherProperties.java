@@ -16,7 +16,7 @@ public class WeatherProperties {
     }
 
     public void setExpireAfterSeconds(int expireAfterSeconds) {
-        if (expireAfterSeconds <0){
+        if (expireAfterSeconds < 0) {
             this.expireAfterSeconds = 0;
             return;
         }
@@ -28,8 +28,8 @@ public class WeatherProperties {
     }
 
     public void setUpdateAfterSeconds(int updateAfterSeconds) {
-        if (updateAfterSeconds <1) {
-            this.updateAfterSeconds = 1;
+        if (updateAfterSeconds < 60) {
+            this.updateAfterSeconds = 60;
             return;
         }
         this.updateAfterSeconds = updateAfterSeconds;

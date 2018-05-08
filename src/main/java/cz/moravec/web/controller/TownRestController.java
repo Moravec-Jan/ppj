@@ -1,7 +1,7 @@
-package cz.moravec.controller;
+package cz.moravec.web.controller;
 
-import cz.moravec.core.RestApi;
 import cz.moravec.model.Town;
+import cz.moravec.web.RestApi;
 import cz.moravec.service.TownService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class TownRestController {
 
     @RequestMapping(value = RestApi.TOWNS_PATH, method = RequestMethod.GET)
     public ResponseEntity<List<Town>> showTowns() {
-        List<Town> towns = townService.getAll(PageRequest.of(0,100));
+        List<Town> towns = townService.getAll(PageRequest.of(0, 100));
         return new ResponseEntity<>(towns, HttpStatus.OK);
     }
 
@@ -37,8 +37,18 @@ public class TownRestController {
         }
     }
 
+    @RequestMapping(value = RestApi.TOWN_PATH, method = RequestMethod.POST)
+    public ResponseEntity<Town> updateTown(@RequestBody Town Town) {
+        Optional<Town> requestedTown = townService.get(Town.getId());
+        if (requestedTown.isPresent()) {
+            Town updatedTown = townService.save(Town);
+            return new ResponseEntity<>(updatedTown, HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @RequestMapping(value = RestApi.TOWN_PATH, method = RequestMethod.GET)
-    public ResponseEntity<Town> getTown(@PathVariable("id") int id) {
+    public ResponseEntity<Town> getTown(@PathVariable("id") long id) {
         Optional<Town> town = townService.get(id);
         if (!town.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -48,7 +58,7 @@ public class TownRestController {
     }
 
     @RequestMapping(value = RestApi.TOWN_PATH, method = RequestMethod.DELETE)
-    public ResponseEntity deleteTown(@PathVariable("id") int id) {
+    public ResponseEntity deleteTown(@PathVariable("id") long id) {
         Optional<Town> town = townService.get(id);
         if (!town.isPresent())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
