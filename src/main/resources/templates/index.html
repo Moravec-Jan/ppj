@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link th:href="@{style.css}" rel="stylesheet" type="text/css"  />
+
+    <meta charset="UTF-8">
+    <script type="text/javascript" th:src="@{DataRetriever.js}"></script>
+
+    <title>Actual data monitoring</title>
+</head>
+<body>
+
+<label for="country_selection">Select country</label>
+<select id="country_selection" onchange="getData();">
+    <option id="none">None</option>
+    <option th:each="country  : ${countries}" th:text="${country.getName()}" th:id="${country.getId()}"></option>
+</select>
+
+<div id="dataContainer"></div>
+
+</body>
+</html>

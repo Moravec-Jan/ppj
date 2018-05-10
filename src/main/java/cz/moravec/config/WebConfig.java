@@ -1,4 +1,4 @@
-package cz.moravec.config.provisioning;
+package cz.moravec.config;
 
 import cz.moravec.config.Conditions;
 import cz.moravec.web.ReadOnlyInterceptor;

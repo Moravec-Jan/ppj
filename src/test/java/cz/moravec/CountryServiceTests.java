@@ -1,8 +1,9 @@
 package cz.moravec;
 
+import cz.moravec.config.Conditions;
 import cz.moravec.model.Country;
 import cz.moravec.service.CountryService;
-import cz.moravec.web.RestApi;
+import cz.moravec.web.rest.RestApi;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -10,10 +11,10 @@ import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -25,7 +26,7 @@ import java.util.Optional;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,properties = {"weather.read-only-mode = false"})
 @ActiveProfiles({"test"})
 public class CountryServiceTests {
 
@@ -37,6 +38,7 @@ public class CountryServiceTests {
     @Autowired
     private CountryService countryService;
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void createCountryTest() throws IOException {
         Country country = createCountry();
@@ -50,6 +52,7 @@ public class CountryServiceTests {
         assertEquals("Created country does not equal requested", last.toString(), response.body().toString());
     }
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void deleteCountryTest() throws IOException {
 
@@ -61,6 +64,7 @@ public class CountryServiceTests {
         assertTrue("Country should be deleted", !country.isPresent());
     }
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void updateCountryTest() throws IOException {
 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+
+</head>
+
+<body>
+<div th:fragment="dataTable">
+    <table>
+        <thead>
+        <tr>
+            <th>Town</th>
+            <th>Time</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+            <th>Pressure</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="measurement : ${measurements}">
+            <td th:text="${measurement.getTownName()}">unknown</td>
+            <td th:text="${measurement.getCreationTime()}">unknown</td>
+            <td th:text="${measurement.getTemperature()}+ ' &#8451;'">unknown</td>
+            <td th:text="${measurement.getHumidity()}+ ' %'">unknown</td>
+            <td th:text="${measurement.getPressure()}+ ' hpa'">unknown</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

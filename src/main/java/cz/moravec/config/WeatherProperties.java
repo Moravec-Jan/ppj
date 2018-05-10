@@ -28,8 +28,8 @@ public class WeatherProperties {
     }
 
     public void setUpdateAfterSeconds(int updateAfterSeconds) {
-        if (updateAfterSeconds < 60) {
-            this.updateAfterSeconds = 60;
+        if (updateAfterSeconds < 61) { //API call limit
+            this.updateAfterSeconds = 61;
             return;
         }
         this.updateAfterSeconds = updateAfterSeconds;

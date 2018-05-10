@@ -1,15 +1,17 @@
 package cz.moravec;
 
 
+import cz.moravec.config.Conditions;
 import cz.moravec.model.Measurement;
 import cz.moravec.model.projections.MeasurementAverage;
 import cz.moravec.model.projections.MeasurementData;
 import cz.moravec.service.MeasurementService;
-import cz.moravec.web.RestApi;
+import cz.moravec.web.rest.RestApi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,properties = {"weather.read-only-mode = false"})
 @ActiveProfiles({"test"})
 public class MeasurementServiceTests {
 
@@ -41,7 +43,7 @@ public class MeasurementServiceTests {
     private Retrofit retrofit = new Retrofit.Builder().baseUrl(TEST_URL).addConverterFactory(JacksonConverterFactory.create()).build();
     private RestApi restService = retrofit.create(RestApi.class);
 
-
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void createMeasurementTest() throws IOException {
         Measurement measurement = createMeasurement();
@@ -55,6 +57,7 @@ public class MeasurementServiceTests {
         assertEquals("Created measurement does not equal requested", last.toString(), response.body().toString());
     }
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void deleteMeasurementTest() throws IOException {
 
@@ -68,6 +71,7 @@ public class MeasurementServiceTests {
         assertTrue("Measurement should be deleted", !measurement.isPresent());
     }
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void updateMeasurementTest() throws IOException {
 
@@ -197,7 +201,6 @@ public class MeasurementServiceTests {
         return a.getHumidity() == b.getHumidity() &&
                 a.getPressure() == b.getPressure() &&
                 a.getTemperature() == b.getTemperature() &&
-                a.getTownId() == b.getTownId() &&
                 a.getCreationTime().getTime() == b.getCreationTime().getTime();
     }
 }

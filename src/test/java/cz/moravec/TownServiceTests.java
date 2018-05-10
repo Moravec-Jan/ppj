@@ -1,15 +1,16 @@
 package cz.moravec;
 
+import cz.moravec.config.Conditions;
 import cz.moravec.model.Country;
-import cz.moravec.model.Measurement;
 import cz.moravec.model.Town;
 import cz.moravec.service.CountryService;
 import cz.moravec.service.TownService;
-import cz.moravec.web.RestApi;
+import cz.moravec.web.rest.RestApi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,7 +29,8 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+
+@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {"weather.read-only-mode = false"})
 @ActiveProfiles({"test"})
 public class TownServiceTests {
     private static int counter = 1;
@@ -42,6 +44,7 @@ public class TownServiceTests {
     private Retrofit retrofit = new Retrofit.Builder().baseUrl(TEST_URL).addConverterFactory(JacksonConverterFactory.create()).build();
     private RestApi restService = retrofit.create(RestApi.class);
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void createTownTest() throws IOException {
         Town town = createTown();
@@ -52,6 +55,7 @@ public class TownServiceTests {
         assertEquals("Created Town does not equal requested", created.get().toString(), response.body().toString());
     }
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void deleteTownTest() throws IOException {
 
@@ -63,6 +67,7 @@ public class TownServiceTests {
         assertTrue("Town should be deleted", !town.isPresent());
     }
 
+    @Conditional(Conditions.ReadOnlyModeDisabled.class)
     @Test
     public void updateTownTest() throws IOException {
 

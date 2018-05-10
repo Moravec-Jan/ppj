@@ -28,11 +28,12 @@ public class Measurement {
     public static final String TEMPERATURE_NAME = "temperature";
     public static final String PRESSURE_NAME = "pressure";
 
+    //using String for easy parsing
     @Id
     @GeneratedValue
     private String id;
 
-    // also for expiration
+    // used for expiration index
     private Date creationTime = new Date();
 
     private long townId;
@@ -70,10 +71,6 @@ public class Measurement {
     public double getHumidity() {
         return humidity;
     }
-
-//    public void setId(ObjectId id) {
-//        this.id = id;
-//    }
 
     public void setTemperature(double temperature) {
         this.temperature = temperature;

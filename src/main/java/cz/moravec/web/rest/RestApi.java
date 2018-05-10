@@ -1,4 +1,4 @@
-package cz.moravec.web;
+package cz.moravec.web.rest;
 
 import cz.moravec.model.Country;
 import cz.moravec.model.Measurement;

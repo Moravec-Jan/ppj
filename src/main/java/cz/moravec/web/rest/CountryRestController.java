@@ -1,15 +1,12 @@
-package cz.moravec.web.controller;
+package cz.moravec.web.rest;
 
-import cz.moravec.web.RestApi;
 import cz.moravec.model.Country;
 import cz.moravec.service.CountryService;
+import cz.moravec.web.rest.RestApi;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 
 import java.util.List;
 import java.util.Optional;

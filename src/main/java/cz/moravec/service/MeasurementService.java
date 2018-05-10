@@ -1,6 +1,7 @@
 package cz.moravec.service;
 
 import cz.moravec.model.Measurement;
+import cz.moravec.model.Town;
 import cz.moravec.model.projections.MeasurementAverage;
 import cz.moravec.model.projections.MeasurementData;
 import cz.moravec.repository.MeasurementRepository;
@@ -39,15 +40,17 @@ public class MeasurementService {
     }
 
     public MeasurementData findActualWeatherDataForTown(long townId) {
-        return repository.findFirstByOrderByTownIdDesc(townId);
+        return repository.findFirstByTownIdOrderByIdDesc(townId);
     }
 
     @Transactional(readOnly = true)
     public List<MeasurementData> findAllByCountry(long countryId) {
-        List<Long> towns = townRepository.findAllByCountry_Id(countryId);
+        List<Town> towns = townRepository.findAllByCountry_Id(countryId);
         List<MeasurementData> measurements = new ArrayList<>();
-        towns.forEach((townId) -> {
-            measurements.add(findActualWeatherDataForTown(townId));
+        towns.forEach((town) -> {
+            MeasurementData measurement = findActualWeatherDataForTown(town.getId());
+            measurement.setTownName(town.getName());
+            measurements.add(measurement);
         });
         return measurements;
     }

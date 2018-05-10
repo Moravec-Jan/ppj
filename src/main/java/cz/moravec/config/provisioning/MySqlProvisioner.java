@@ -16,10 +16,11 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import javax.sql.DataSource;
 import java.util.List;
 
+@Profile({"test", "devel"})
 @Configuration
 public class MySqlProvisioner implements InitializingBean {
 
-    @Profile({"test", "devel"})
+
     @Bean
     public MySqlProvisioner sqlProvisioner() {
         return new MySqlProvisioner();

@@ -13,5 +13,5 @@ import java.util.List;
 
 
 public interface MeasurementRepository extends MongoRepository<Measurement, String> {
-    MeasurementData findFirstByOrderByTownIdDesc(long townId);
+    MeasurementData findFirstByTownIdOrderByIdDesc(long townId);
 }

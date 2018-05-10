@@ -4,9 +4,7 @@ import java.util.Date;
 
 public class MeasurementData {
     private Date creationTime = new Date();
-
-    private long townId;
-
+    private String townName;
     private double temperature;
     private double pressure;
     private double humidity;
@@ -15,8 +13,8 @@ public class MeasurementData {
         return creationTime;
     }
 
-    public long getTownId() {
-        return townId;
+    public String getTownName() {
+        return townName;
     }
 
     public double getTemperature() {
@@ -35,8 +33,8 @@ public class MeasurementData {
         this.creationTime = creationTime;
     }
 
-    public void setTownId(long townId) {
-        this.townId = townId;
+    public void setTownName(String townName) {
+        this.townName = townName;
     }
 
     public void setTemperature(double temperature) {

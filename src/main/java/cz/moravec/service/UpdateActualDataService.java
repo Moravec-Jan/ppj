@@ -48,7 +48,6 @@ public class UpdateActualDataService {
         threadPoolTaskScheduler.scheduleAtFixedRate(this::addNewMeasurementsForAllTowns, updateInterval);
     }
 
-
     private void addNewMeasurementsForAllTowns() {
         int page = 0;
         while (true) {

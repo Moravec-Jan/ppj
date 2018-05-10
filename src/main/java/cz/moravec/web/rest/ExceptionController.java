@@ -1,4 +1,4 @@
-package cz.moravec.web.controller;
+package cz.moravec.web.rest;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
