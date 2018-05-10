@@ -35,7 +35,12 @@ public class WeatherProperties {
         this.updateAfterSeconds = updateAfterSeconds;
     }
 
+
     public boolean isReadOnlyMode() {
+        return readOnlyMode;
+    }
+
+    public boolean getReadOnlyMode() {
         return readOnlyMode;
     }
 

@@ -3,6 +3,7 @@ package cz.moravec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.moravec.config.WeatherProperties;
+import cz.moravec.model.projections.MeasurementData;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +22,17 @@ import java.util.Date;
 public class Measurement {
     public static final String COLLECTION_NAME = "measurement";
     public static final String CREATION_TIME_NAME = "creationTime";
+    public static final String TOWN_ID_NAME = "townId";
+    public static final String ID_NAME = "_id";
+    public static final String HUMIDITY_NAME = "humidity";
+    public static final String TEMPERATURE_NAME = "temperature";
+    public static final String PRESSURE_NAME = "pressure";
 
     @Id
     @GeneratedValue
     private String id;
 
-    // for expiration
+    // also for expiration
     private Date creationTime = new Date();
 
     private long townId;

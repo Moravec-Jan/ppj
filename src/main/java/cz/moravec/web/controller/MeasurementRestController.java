@@ -1,13 +1,17 @@
 package cz.moravec.web.controller;
 
+import cz.moravec.model.projections.MeasurementAverage;
+import cz.moravec.model.projections.MeasurementData;
 import cz.moravec.web.RestApi;
 import cz.moravec.model.Measurement;
 import cz.moravec.service.MeasurementService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +30,37 @@ public class MeasurementRestController {
         return new ResponseEntity<>(measurements, HttpStatus.OK);
     }
 
+
+    @RequestMapping(value = RestApi.AVG_MEASUREMENT_PATH, method = RequestMethod.GET)
+    public ResponseEntity<MeasurementAverage> getAvgMeasurement(@PathVariable("town_id") long id, @RequestParam(value = "from", required = false) String from) {
+
+        if (StringUtils.isEmpty(from)) {
+            from = RestApi.Interval.DEFAULT;
+        }
+
+        MeasurementAverage measurement;
+        switch (from) {
+            case RestApi.Interval.DAY:
+                measurement = measurementService.getAverageForDay(id);
+                break;
+            case RestApi.Interval.WEEK:
+                measurement = measurementService.getAverageForWeek(id);
+                break;
+            case RestApi.Interval.TWO_WEEKS:
+                measurement = measurementService.getAverageForTwoWeeks(id);
+                break;
+            default:
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity<>(measurement, HttpStatus.OK);
+    }
+
     @RequestMapping(value = RestApi.MEASUREMENTS_PATH, method = RequestMethod.POST)
     public ResponseEntity<Measurement> addMeasurement(@RequestBody Measurement measurement) {
-            measurementService.save(measurement);
-            return new ResponseEntity<>(measurement, HttpStatus.OK);
+        measurementService.save(measurement);
+        return new ResponseEntity<>(measurement, HttpStatus.OK);
     }
 
     @RequestMapping(value = RestApi.MEASUREMENT_PATH, method = RequestMethod.POST)
@@ -40,6 +71,7 @@ public class MeasurementRestController {
             return new ResponseEntity<>(updatedMeasurement, HttpStatus.OK);
         } else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
 
@@ -52,6 +84,17 @@ public class MeasurementRestController {
             return new ResponseEntity<>(measurement.get(), HttpStatus.OK);
 
     }
+
+    @RequestMapping(value = RestApi.ACTUAL_MEASUREMENT_PATH, method = RequestMethod.GET)
+    public ResponseEntity<MeasurementData> getActualMeasurement(@PathVariable("town_id") long id) {
+        MeasurementData measurement = measurementService.findActualWeatherDataForTown(id);
+        if (measurement == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else
+            return new ResponseEntity<>(measurement, HttpStatus.OK);
+
+    }
+
 
     @RequestMapping(value = RestApi.MEASUREMENT_PATH, method = RequestMethod.DELETE)
     public ResponseEntity deleteMeasurement(@PathVariable("id") String id) {

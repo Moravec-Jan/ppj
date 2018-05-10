@@ -1,10 +1,13 @@
-package cz.moravec.provisioning;
+package cz.moravec.config.provisioning;
 
 import cz.moravec.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -13,7 +16,14 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import javax.sql.DataSource;
 import java.util.List;
 
+@Configuration
 public class MySqlProvisioner implements InitializingBean {
+
+    @Profile({"test", "devel"})
+    @Bean
+    public MySqlProvisioner sqlProvisioner() {
+        return new MySqlProvisioner();
+    }
 
     private static final Logger log = LoggerFactory.getLogger(App.class);
 

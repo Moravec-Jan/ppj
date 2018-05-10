@@ -1,9 +1,11 @@
 package cz.moravec.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+@Conditional(Conditions.ReadOnlyModeDisabled.class)
 @Configuration
 public class TaskSchedulerConfig {
 

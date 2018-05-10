@@ -1,12 +1,15 @@
 package cz.moravec.service;
 
 import cz.moravec.App;
+import cz.moravec.config.Conditions;
 import cz.moravec.config.WeatherProperties;
 import cz.moravec.model.Measurement;
 import cz.moravec.model.Town;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -15,9 +18,11 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+
 @Profile("!test")
+@Conditional(Conditions.ReadOnlyModeDisabled.class)
 @Service
-class UpdateActualDataService {
+public class UpdateActualDataService {
     private static final Logger log = LoggerFactory.getLogger(App.class);
     private static final int batch = 1000;
 

@@ -1,29 +1,30 @@
 package cz.moravec.service;
 
 import cz.moravec.model.Measurement;
+import cz.moravec.model.projections.MeasurementAverage;
+import cz.moravec.model.projections.MeasurementData;
 import cz.moravec.repository.MeasurementRepository;
+import cz.moravec.repository.TownRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import java.util.*;
 
 @Service
 public class MeasurementService {
-
+    public static final int PAGE_REQUEST = 1000;
+    private final TownRepository townRepository;
     private final MeasurementRepository repository;
     private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public MeasurementService(MeasurementRepository repository, MongoTemplate mongoTemplate) {
+    public MeasurementService(TownRepository townRepository, MeasurementRepository repository, MongoTemplate mongoTemplate) {
+        this.townRepository = townRepository;
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
     }
@@ -35,6 +36,20 @@ public class MeasurementService {
 
     public List<Measurement> getAll(Pageable pageable) {
         return repository.findAll(pageable).getContent();
+    }
+
+    public MeasurementData findActualWeatherDataForTown(long townId) {
+        return repository.findFirstByOrderByTownIdDesc(townId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MeasurementData> findAllByCountry(long countryId) {
+        List<Long> towns = townRepository.findAllByCountry_Id(countryId);
+        List<MeasurementData> measurements = new ArrayList<>();
+        towns.forEach((townId) -> {
+            measurements.add(findActualWeatherDataForTown(townId));
+        });
+        return measurements;
     }
 
     public Measurement save(Measurement Measurement) {
@@ -59,20 +74,32 @@ public class MeasurementService {
         return !repository.existsById(Measurement.getId());
     }
 
-    public Measurement getAverageForDay() {
-        GroupOperation group = group()
-                .avg(Measurement.HUMIDITY_NAME).as("Humidity average")
-                .avg(Measurement.PRESSURE_NAME).as("Pressure average")
-                .avg(Measurement.TEMPERATURE_NAME).as("Temperature average");
-        MatchOperation matchStage = Aggregation.match(new Criteria(Measurement.CREATION_TIME_NAME).gt(getDateBeforeOneDay()));
-        ProjectionOperation projectStage = Aggregation.project("Humidity average");
-        //projectStage = projectStage.andExclude(Measurement.ID_NAME);
-        Aggregation aggregation = Aggregation.newAggregation(matchStage);
+    public MeasurementAverage getAverageForDay(long townId) {
+        return getMeasurementAverageSince(townId, getDateBeforeOneDay());
+    }
 
-        AggregationResults<Measurement> output
-                = mongoTemplate.aggregate(aggregation, Measurement.COLLECTION_NAME, Measurement.class);
-        List<Measurement> mappedResults = output.getMappedResults();
-        return null;
+
+    public MeasurementAverage getAverageForWeek(long townId) {
+
+        return getMeasurementAverageSince(townId, getDateBeforeWeek());
+    }
+
+    public MeasurementAverage getAverageForTwoWeeks(long townId) {
+        return getMeasurementAverageSince(townId, getDateBeforeTwoWeeks());
+    }
+
+
+    private static Date getDateBeforeOneDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        return calendar.getTime();
+    }
+
+
+    private static Date getDateBeforeWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
+        return calendar.getTime();
     }
 
     private static Date getDateBeforeTwoWeeks() {
@@ -81,26 +108,21 @@ public class MeasurementService {
         return calendar.getTime();
     }
 
-    private static Date getDateBeforeOneDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        return calendar.getTime();
-    }
 
-    private static Date getDateBeforeWeek() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -7);
-        return calendar.getTime();
-    }
+    private MeasurementAverage getMeasurementAverageSince(long townId, Date date) {
+        GroupOperation group = Aggregation.group()
+                .avg(Measurement.HUMIDITY_NAME).as(MeasurementAverage.HUMIDITY_AVERAGE)
+                .avg(Measurement.PRESSURE_NAME).as(MeasurementAverage.PRESSURE_AVERAGE)
+                .avg(Measurement.TEMPERATURE_NAME).as(MeasurementAverage.TEMPERATURE_AVERAGE);
 
-    public Measurement getAverageForWeek() {
-        return null;
-    }
+        MatchOperation match = Aggregation.match(new Criteria(Measurement.CREATION_TIME_NAME).gt(date).and(Measurement.TOWN_ID_NAME).is(townId));
+        ProjectionOperation projection = Aggregation.project(MeasurementAverage.TEMPERATURE_AVERAGE, MeasurementAverage.HUMIDITY_AVERAGE, MeasurementAverage.PRESSURE_AVERAGE);
+        projection = projection.andExclude(Measurement.ID_NAME);
+        Aggregation aggregation = Aggregation.newAggregation(match, group, projection);
 
-    public Measurement getAverageForTwoWeeks() {
-        return null;
+        AggregationResults<MeasurementAverage> output = mongoTemplate.aggregate(aggregation, Measurement.COLLECTION_NAME, MeasurementAverage.class);
+        return output.getUniqueMappedResult();
     }
-
 
     public boolean deleteAll() {
         repository.deleteAll();
