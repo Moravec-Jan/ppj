@@ -11,12 +11,10 @@ public class Country {
 
     static final String TABLE_NAME = "country";
 
-
     @Id
-    @GeneratedValue
+    @GeneratedValue()
     private long id;
     private String name;
-
 
     public Country() {
     }

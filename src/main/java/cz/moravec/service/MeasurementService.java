@@ -49,6 +49,8 @@ public class MeasurementService {
         List<MeasurementData> measurements = new ArrayList<>();
         towns.forEach((town) -> {
             MeasurementData measurement = findActualWeatherDataForTown(town.getId());
+            if (measurement == null)
+                return;
             measurement.setTownName(town.getName());
             measurements.add(measurement);
         });

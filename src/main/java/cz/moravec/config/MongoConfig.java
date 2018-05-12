@@ -27,7 +27,7 @@ public class MongoConfig implements InitializingBean {
             mongo.indexOps(Measurement.COLLECTION_NAME).ensureIndex(new Index(Measurement.CREATION_TIME_NAME, Sort.Direction.ASC).expire(properties.getExpireAfterSeconds()).named(EXPIRATION_INDEX));
         } catch (UncategorizedMongoDbException e) {
             // using exception because there is no method for getting index expiration time
-            // so we cannot find out if index has same expiration option as new
+            // so we cannot find out if index has same expiration option as defined in properties
             // and we don't want drop index every time when app is started
             mongo.indexOps(Measurement.COLLECTION_NAME).dropIndex(EXPIRATION_INDEX);
             mongo.indexOps(Measurement.COLLECTION_NAME).ensureIndex(new Index().on(EXPIRATION_INDEX, Sort.Direction.ASC).expire(properties.getExpireAfterSeconds()));
