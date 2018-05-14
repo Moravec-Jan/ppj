@@ -44,7 +44,6 @@
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <version>2.0.3</version>
-            <!--<scope>test</scope>-->
         </dependency>
 
         <dependency>
@@ -89,7 +88,7 @@
             <version>2.4.0</version>
         </dependency>
 
-        <!--due to hibernate javax.xml.bind.JAXBException after building app -->
+        <!--need this because of hibernate, javax.xml.bind.JAXBException after executable created-->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>

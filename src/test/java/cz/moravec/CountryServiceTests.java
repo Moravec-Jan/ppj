@@ -5,9 +5,6 @@ import cz.moravec.model.Country;
 import cz.moravec.service.CountryService;
 import cz.moravec.web.rest.RestApi;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,9 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,properties = {"weather.read-only-mode = false"})
+@SpringBootTest(classes = {App.class},
+        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+        properties = {"weather.read-only-mode = false"})
 @ActiveProfiles({"test"})
 public class CountryServiceTests {
 
@@ -112,7 +112,7 @@ public class CountryServiceTests {
     private List<Country> createCountries() {
         Country country = createCountry();
         Country country2 = new Country("Czech Republic");
-        List<Country> countries = new ArrayList<Country>();
+        List<Country> countries = new ArrayList<>();
         countries.add(country);
         countries.add(country2);
         return countries;

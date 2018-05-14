@@ -3,6 +3,9 @@ package cz.moravec.model.projections;
 
 import java.util.Date;
 
+/**
+ * Projection for getting average data
+ */
 public class MeasurementAverage {
     public static final String HUMIDITY_AVERAGE = "humidityAverage";
     public static final String PRESSURE_AVERAGE = "pressureAverage";
@@ -21,23 +24,12 @@ public class MeasurementAverage {
         return humidityAverage;
     }
 
-    public void setHumidityAverage(double humidityAverage) {
-        this.humidityAverage = humidityAverage;
-    }
-
     public double getPressureAverage() {
         return pressureAverage;
-    }
-
-    public void setPressureAverage(double pressureAverage) {
-        this.pressureAverage = pressureAverage;
     }
 
     public double getTemperatureAverage() {
         return temperatureAverage;
     }
 
-    public void setTemperatureAverage(double temperatureAverage) {
-        this.temperatureAverage = temperatureAverage;
-    }
 }

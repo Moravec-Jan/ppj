@@ -8,7 +8,6 @@ import cz.moravec.model.Town;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +17,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-
+/**
+ * Service for scheduling download and persisting data.
+ */
 @Profile("!test")
 @Conditional(Conditions.ReadOnlyModeDisabled.class)
 @Service
@@ -44,6 +45,7 @@ public class UpdateActualDataService {
         downloadDataPeriodically();
     }
 
+    // invoked after bean created
     private void downloadDataPeriodically() {
         threadPoolTaskScheduler.scheduleAtFixedRate(this::addNewMeasurementsForAllTowns, updateInterval);
     }

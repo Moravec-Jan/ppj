@@ -3,12 +3,15 @@ package cz.moravec.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * For getting and validating properties.
+ */
 @Component
 @ConfigurationProperties("weather")
 public class WeatherProperties {
     private String apiKey = "040abd4ec254d0fce692abfbf8824333";
-    private int expireAfterSeconds = 1209600;
-    private int updateAfterSeconds = 3600;
+    private int expireAfterSeconds = 1209600; //14 days
+    private int updateAfterSeconds = 3600; // 1 hour
     private boolean readOnlyMode = false;
 
     public int getExpireAfterSeconds() {

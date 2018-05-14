@@ -13,7 +13,6 @@ public class Town {
     @Column(name = "name")
     private String name;
     @ManyToOne
-//    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "country_id")
     private Country country;
 

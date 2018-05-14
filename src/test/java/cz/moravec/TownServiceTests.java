@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -113,7 +111,7 @@ public class TownServiceTests {
         countryService.save(country);
         Town town = new Town(counter++, "Prague", country);
         Town town2 = new Town(counter++, "Brno", country);
-        List<Town> countries = new ArrayList<Town>();
+        List<Town> countries = new ArrayList<>();
         countries.add(town);
         countries.add(town2);
         return countries;

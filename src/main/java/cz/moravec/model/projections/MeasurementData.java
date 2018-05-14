@@ -2,6 +2,10 @@ package cz.moravec.model.projections;
 
 import java.util.Date;
 
+/**
+ * Projection for getting only data we need.
+ */
+@SuppressWarnings("unused") // used by jpa repository
 public class MeasurementData {
     private Date creationTime = new Date();
     private String townName;
@@ -11,10 +15,6 @@ public class MeasurementData {
 
     public Date getCreationTime() {
         return creationTime;
-    }
-
-    public String getTownName() {
-        return townName;
     }
 
     public double getTemperature() {
@@ -29,23 +29,11 @@ public class MeasurementData {
         return humidity;
     }
 
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
+    public String getTownName() {
+        return townName;
     }
 
     public void setTownName(String townName) {
         this.townName = townName;
-    }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
-    public void setPressure(double pressure) {
-        this.pressure = pressure;
-    }
-
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
     }
 }

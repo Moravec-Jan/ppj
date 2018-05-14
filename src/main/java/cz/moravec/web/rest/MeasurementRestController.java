@@ -1,10 +1,9 @@
 package cz.moravec.web.rest;
 
+import cz.moravec.model.Measurement;
 import cz.moravec.model.projections.MeasurementAverage;
 import cz.moravec.model.projections.MeasurementData;
-import cz.moravec.model.Measurement;
 import cz.moravec.service.MeasurementService;
-import cz.moravec.web.rest.RestApi;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

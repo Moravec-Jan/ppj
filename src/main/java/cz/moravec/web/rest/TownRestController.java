@@ -2,7 +2,6 @@ package cz.moravec.web.rest;
 
 import cz.moravec.model.Town;
 import cz.moravec.service.TownService;
-import cz.moravec.web.rest.RestApi;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

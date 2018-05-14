@@ -1,7 +1,10 @@
 package cz.moravec.model;
 
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import static cz.moravec.model.Country.TABLE_NAME;
 

@@ -1,3 +1,6 @@
+/*
+Getting actual weather data for selected country using ajax
+*/
 function getData() {
 
     var select = document.getElementById("country_selection");

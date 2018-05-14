@@ -1,21 +1,19 @@
 package cz.moravec.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.jayway.jsonpath.JsonPath;
 import cz.moravec.config.WeatherProperties;
 import cz.moravec.model.Measurement;
-import net.minidev.json.JSONArray;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
 
-
+/**
+ * Service for downloading weather data from Openweather server
+ */
 @Service
 public class WeatherService {
 

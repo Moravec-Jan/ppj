@@ -5,13 +5,24 @@ import cz.moravec.model.Measurement;
 import cz.moravec.model.Town;
 import cz.moravec.model.projections.MeasurementAverage;
 import cz.moravec.model.projections.MeasurementData;
-import jdk.nashorn.internal.codegen.CompilerConstants;
 import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.util.List;
 
+/**
+ * Defines REST API interface.
+ * using retrofit for easy testing
+ */
 public interface RestApi {
+
+    class Interval {
+        public static final String DAY = "day";
+        public static final String DEFAULT = DAY;
+        public static final String WEEK = "week";
+        public static final String TWO_WEEKS = "two_weeks";
+    }
+
     String TOWNS_PATH = "/towns";
     String TOWN_PATH = TOWNS_PATH + "/{id}";
     String COUNTRIES_PATH = "/countries";
@@ -56,13 +67,6 @@ public interface RestApi {
 
     //endregion
     //region measurement
-
-    class Interval {
-        public static final String DAY = "day";
-        public static final String DEFAULT = DAY;
-        public static final String WEEK = "week";
-        public static final String TWO_WEEKS = "two_weeks";
-    }
 
     @GET(MEASUREMENTS_PATH)
     Call<List<Measurement>> getMeasurements();

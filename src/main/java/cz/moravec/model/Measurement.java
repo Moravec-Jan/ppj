@@ -1,23 +1,13 @@
 package cz.moravec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.moravec.config.WeatherProperties;
-import cz.moravec.model.projections.MeasurementData;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.GeneratedValue;
 import java.util.Date;
 
 
+@SuppressWarnings("unused") // used in thymeleaf template
 @Document(collection = Measurement.COLLECTION_NAME)
 public class Measurement {
     public static final String COLLECTION_NAME = "measurement";
@@ -56,12 +46,26 @@ public class Measurement {
         return id;
     }
 
+    public double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(double temperature) {
+        this.temperature = temperature;
+    }
+
+    @Override
+    public String toString() {
+        return "Measurement [" + "id=" + id + ", town_id=" + townId + " , temperature=" + temperature + ", humidity=" + humidity + ", pressure=" + pressure + "]";
+    }
+
+
     public Date getCreationTime() {
         return creationTime;
     }
 
-    public double getTemperature() {
-        return temperature;
+    public long getTownId() {
+        return townId;
     }
 
     public double getPressure() {
@@ -70,30 +74,5 @@ public class Measurement {
 
     public double getHumidity() {
         return humidity;
-    }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
-    public void setPressure(double pressure) {
-        this.pressure = pressure;
-    }
-
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
-    }
-
-    public long getTownId() {
-        return townId;
-    }
-
-    public void setTownId(long townId) {
-        this.townId = townId;
-    }
-
-    @Override
-    public String toString() {
-        return "Measurement [" + "id=" + id + ", town_id=" + townId + " , temperature=" + temperature + ", humidity=" + humidity + ", pressure=" + pressure + "]";
     }
 }

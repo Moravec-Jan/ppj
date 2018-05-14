@@ -21,6 +21,9 @@ public class MongoConfig implements InitializingBean {
         this.properties = properties;
     }
 
+    /**
+     * Setting expiration index based on property.
+     */
     @Override
     public void afterPropertiesSet() {
         try {

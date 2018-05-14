@@ -1,11 +1,13 @@
 <configuration>
 
+    <!--appender to console -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <!--appender to file -->
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -14,18 +16,21 @@
         <append>false</append>
     </appender>
 
+    <!-- production profile logging all to file -->
     <springProfile name="prod">
         <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>
     </springProfile>
 
+    <!-- test profile logging all to console -->
     <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
         </root>
     </springProfile>
 
+    <!-- developer profile logging all to console -->
     <springProfile name="devel">
         <root level="INFO">
             <appender-ref ref="STDOUT"/>

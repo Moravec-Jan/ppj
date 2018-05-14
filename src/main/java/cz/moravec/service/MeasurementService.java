@@ -18,7 +18,6 @@ import java.util.*;
 
 @Service
 public class MeasurementService {
-    public static final int PAGE_REQUEST = 1000;
     private final TownRepository townRepository;
     private final MeasurementRepository repository;
     private final MongoTemplate mongoTemplate;
@@ -64,11 +63,6 @@ public class MeasurementService {
     public void save(List<Measurement> countries) {
         repository.saveAll(countries);
     }
-
-    public boolean exists(String id) {
-        return repository.existsById(id);
-    }
-
 
     public long getCount() {
         return repository.count();
@@ -127,10 +121,5 @@ public class MeasurementService {
 
         AggregationResults<MeasurementAverage> output = mongoTemplate.aggregate(aggregation, Measurement.COLLECTION_NAME, MeasurementAverage.class);
         return output.getUniqueMappedResult();
-    }
-
-    public boolean deleteAll() {
-        repository.deleteAll();
-        return repository.count() == 0;
     }
 }

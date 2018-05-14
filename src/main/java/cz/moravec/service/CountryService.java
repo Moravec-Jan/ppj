@@ -3,13 +3,12 @@ package cz.moravec.service;
 import cz.moravec.model.Country;
 import cz.moravec.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-//@Profile("!mongo_test")
+
 @Service
 public class CountryService {
 
@@ -48,10 +47,5 @@ public class CountryService {
     public boolean delete(Country country) {
         repository.delete(country);
         return !repository.existsById(country.getId());
-    }
-
-    public boolean deleteAll() {
-        repository.deleteAll();
-        return repository.count() == 0;
     }
 }

@@ -3,7 +3,6 @@ package cz.moravec.service;
 import cz.moravec.model.Town;
 import cz.moravec.repository.TownRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -41,17 +40,8 @@ public class TownService {
         return repository.existsById(id);
     }
 
-    public long getCount() {
-        return repository.count();
-    }
-
     public boolean delete(Town Town) {
         repository.delete(Town);
         return !repository.existsById(Town.getId());
-    }
-
-    public boolean deleteAll() {
-        repository.deleteAll();
-        return repository.count() == 0;
     }
 }
