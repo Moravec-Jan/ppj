@@ -23,7 +23,7 @@
         </root>
     </springProfile>
 
-    <!-- test profile logging all to console -->
+    <!-- test profile logging all to console and file -->
     <springProfile name="test">
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
