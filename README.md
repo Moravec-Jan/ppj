@@ -1,5 +1,4 @@
-# ppj_semester_project
-School semester project.
+# PPJ semester project
 
 ### Executable archive
 Download from: https://mega.nz/#!AQUFzRQC!P0WDN5C3fkr_wBxEehhAbLivSzxhrBVQTKqBo0YkDgM
