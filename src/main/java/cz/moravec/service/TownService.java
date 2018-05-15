@@ -40,8 +40,7 @@ public class TownService {
         return repository.existsById(id);
     }
 
-    public boolean delete(Town Town) {
+    public void delete(Town Town) {
         repository.delete(Town);
-        return !repository.existsById(Town.getId());
     }
 }

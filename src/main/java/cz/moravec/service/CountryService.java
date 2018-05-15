@@ -45,9 +45,7 @@ public class CountryService {
         return repository.count();
     }
 
-    @Transactional
-    public boolean delete(Country country) {
+    public void delete(Country country) {
         repository.delete(country);
-        return !repository.existsById(country.getId());
     }
 }

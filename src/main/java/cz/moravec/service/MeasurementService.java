@@ -68,9 +68,8 @@ public class MeasurementService {
         return repository.count();
     }
 
-    public boolean delete(Measurement Measurement) {
+    public void delete(Measurement Measurement) {
         repository.delete(Measurement);
-        return !repository.existsById(Measurement.getId());
     }
 
     public MeasurementAverage getAverageForDay(long townId) {
