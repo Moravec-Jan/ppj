@@ -25,9 +25,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-
 @SpringBootTest(classes = {App.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {"weather.read-only-mode = false"})
 @ActiveProfiles({"test"})
 public class TownServiceTests {

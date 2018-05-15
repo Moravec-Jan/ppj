@@ -30,7 +30,6 @@ import static org.junit.Assert.*;
 @ActiveProfiles({"test"})
 public class CountryServiceTests {
 
-
     private final String TEST_URL = "http://localhost:8080";
     private Retrofit retrofit = new Retrofit.Builder().baseUrl(TEST_URL).addConverterFactory(JacksonConverterFactory.create()).build();
     private RestApi restService = retrofit.create(RestApi.class);

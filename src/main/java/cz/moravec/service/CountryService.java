@@ -5,6 +5,7 @@ import cz.moravec.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class CountryService {
         return repository.count();
     }
 
+    @Transactional
     public boolean delete(Country country) {
         repository.delete(country);
         return !repository.existsById(country.getId());
